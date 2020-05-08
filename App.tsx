@@ -1,19 +1,20 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { View } from 'react-native';
+import { createStore } from 'redux';
+import { Provider } from 'react-redux';
+import AddEntry from './components/AddEntry.js';
+import reducer from './reducers';
+
+const store = createStore(reducer);
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-    </View>
+    <Provider store={store}>
+    <View style={{flex: 1}}>
+      <AddEntry/>
+      </View>
+      </Provider>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+
