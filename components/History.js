@@ -1,12 +1,18 @@
-import React, {useEffect} from "react";
-import {View, Text} from "react-native";
-import {connect} from "react-redux";
+import React, {useEffect, useState} from "react";
+import {View, Text, StyleSheet, Platform, TouchableOpacity} from "react-native";
+import { connect } from "react-redux";
+import { AppLoading } from 'expo';
 import UdaciFitnessCalendar from 'udacifitness-calendar';
 import {receiveEntries, addEntry} from "../actions";
 import {timeToString, getDailyReminderValue} from "../utils/helpers";
-import {fetchCalendarResult} from "../utils/api";
+import { fetchCalendarResult } from "../utils/api";
+import { white } from '../utils/colors';
+import DateHeader from './DateHeader';
+import MetricCard from './MetricCard';
 
-const History = ({receiveEntries, addEntry, entries}) => {
+const History = ({ receiveEntries, addEntry, entries }) => {
+    
+    const [ready, setReady] = useState(false)
   useEffect(() => {
     fetchCalendarResult()
       .then((entries) => receiveEntries(entries))
@@ -16,33 +22,48 @@ const History = ({receiveEntries, addEntry, entries}) => {
             [timeToString()]: getDailyReminderValue(),
           });
         }
-      });
+      })
+      .then(() => setReady(true))
   }, []);
 
   const renderItem = ({today, ...metrics}, formattedDate, key) => (
-    <View>
+    <View style={styles.item}>
       {today ? (
-        <Text>{JSON.stringify(today)}</Text>
+              <View>
+                  <DateHeader date={formattedDate} />
+                  <Text style={styles.noDataText}>
+                  {today}
+                  
+                  </Text>
+              </View>
       ) : (
-        <Text>{JSON.stringify(metrics)}</Text>
+                  <TouchableOpacity onPress={() => console.log("Pressed")}>
+                      <MetricCard metrics={metrics} date={formattedDate}/>
+                  
+                  </TouchableOpacity>
       )}
     </View>
   );
 
   const renderEmptyDate = (formattedDate) => (
-    <View>
-      <Text>No Data for this day</Text>
+      <View style={styles.item}>
+          <DateHeader date={formattedDate} />
+          <Text style={styles.noDataText}>
+          
+          You didn't log any data on this day
+          </Text>
     </View>
   );
 
   return (
-    <View>
-      <UdaciFitnessCalendar
+    
+       ready === false ? <AppLoading /> :
+          <UdaciFitnessCalendar
         items={entries}
         renderItem={renderItem}
         renderEmptyDate={renderEmptyDate}
       />
-    </View>
+   
   );
 };
 
@@ -51,3 +72,28 @@ const mapStateToProps = (entries) => ({
 });
 
 export default connect(mapStateToProps, {receiveEntries, addEntry})(History);
+
+const styles = StyleSheet.create({
+
+    item: {
+        backgroundColor: white,
+        borderRadius: Platform.os === "ios" ? 16 : 2,
+        padding: 20,
+        marginLeft: 10,
+        marginRight: 10,
+        marginTop: 17,
+        justifyContent: 'center',
+        shadowRadius: 3,
+        shadowOpacity: 0.8,
+        shadowColor: 'rgba(0,0,0,0.24)',
+        shadowOffset: {
+            width: 0,
+            height: 3
+        }
+    },
+    noDataText: {
+        fontSize: 20,
+        paddingBottom: 20,
+        paddingTop: 20,
+    }
+})
