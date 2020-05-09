@@ -10,7 +10,7 @@ import { white } from '../utils/colors';
 import DateHeader from './DateHeader';
 import MetricCard from './MetricCard';
 
-const History = ({ receiveEntries, addEntry, entries }) => {
+const History = ({ receiveEntries, addEntry, entries, navigation }) => {
     
     const [ready, setReady] = useState(false)
   useEffect(() => {
@@ -37,7 +37,7 @@ const History = ({ receiveEntries, addEntry, entries }) => {
                   </Text>
               </View>
       ) : (
-                  <TouchableOpacity onPress={() => console.log("Pressed")}>
+                  <TouchableOpacity onPress={() => navigation.navigate('EntryDetail', { entryId: key})}>
                       <MetricCard metrics={metrics} date={formattedDate}/>
                   
                   </TouchableOpacity>

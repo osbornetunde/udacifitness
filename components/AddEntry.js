@@ -10,6 +10,7 @@ import TextButton from './TextButton';
 import { submitEntry, removeEntry } from '../utils/api';
 import { addEntry, receiveEntries } from '../actions';
 import { white, purple } from '../utils/colors'
+import { CommonActions } from '@react-navigation/native';
 
 
 
@@ -25,7 +26,7 @@ const SubmitButton = ({ onPress }) => {
 }
 
 
-const AddEntry = ({ addEntry, receiveEntries, alreadyLogged}) => {
+const AddEntry = ({ addEntry, receiveEntries, alreadyLogged, navigation}) => {
      
      const [item, setItem] = useState({
          run: 0,
@@ -82,18 +83,25 @@ const AddEntry = ({ addEntry, receiveEntries, alreadyLogged}) => {
          addEntry({
              [key]: entry
          })
-         //Navigate to home
-         submitEntry({key, entry})
+         toHome()
+         submitEntry({entry, key})
          
 
      }
+
+     const toHome = () => {
+        navigation.dispatch(
+            CommonActions.goBack({
+                key: 'AddEntry',
+            }))
+    }
     
     const reset = () => {
         const key = timeToString()
         addEntry({
             [key]: getDailyReminderValue()
         })
-         //Navigate to home
+         toHome()
          removeEntry(key)
          //Clear local notification
     }
