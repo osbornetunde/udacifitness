@@ -1,7 +1,7 @@
 import React, { useState} from 'react';
 import { View, Text, TouchableOpacity, Platform, StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
-import { getMetricMetaInfo, timeToString, getDailyReminderValue } from '../utils/helpers';
+import { getMetricMetaInfo, timeToString, getDailyReminderValue, clearLocalNotification, setLocalNotification } from '../utils/helpers';
 import UdaciSlider from './UdaciSlider';
 import UdaciSteppers from './UdaciSteppers';
 import DateHeader from './DateHeader';
@@ -11,6 +11,7 @@ import { submitEntry, removeEntry } from '../utils/api';
 import { addEntry, receiveEntries } from '../actions';
 import { white, purple } from '../utils/colors'
 import { CommonActions } from '@react-navigation/native';
+
 
 
 
@@ -103,7 +104,8 @@ const AddEntry = ({ addEntry, receiveEntries, alreadyLogged, navigation}) => {
         })
          toHome()
          removeEntry(key)
-         //Clear local notification
+         clearLocalNotification()
+         .then(setLocalNotification())
     }
 
      const metaInfo = getMetricMetaInfo()

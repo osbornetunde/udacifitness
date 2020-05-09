@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View , Platform, StatusBar} from 'react-native';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
@@ -13,14 +13,18 @@ import { purple, white } from './utils/colors.js';
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
 import Constants from 'expo-constants';
 import EntryDetail from './components/EntryDetail.js';
-import Live from './components/Live'
+import Live from './components/Live';
+import  { setLocalNotification } from './utils/helpers'
 
 const store = createStore(reducer);
 
 
-
-
-function UdaciStatusBar({ backgroundColor, ...props}) {
+function UdaciStatusBar({ backgroundColor, ...props }) {
+  
+  useEffect(() => {
+    setLocalNotification()
+  }, [])
+  
   return (
     <View style={{ backgroundColor, height: Constants.statusBarHeight }}>
       <StatusBar translucent backgroundColor={backgroundColor} {...props}/>
